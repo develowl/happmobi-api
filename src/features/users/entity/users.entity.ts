@@ -1,14 +1,15 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { hashSync } from 'bcrypt'
+import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity()
+@Entity('Users')
 export class UserModel extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string
 
-  @Column({ unique: true, length: 9 })
-  readonly cpf: string
+  @Column({ unique: true })
+  readonly email: string
 
-  @Column()
+  @Column({ select: false })
   password: string
 
   @Column()
@@ -16,4 +17,9 @@ export class UserModel extends BaseEntity {
 
   @Column()
   lastname: string
+
+  @BeforeInsert()
+  hashPassword() {
+    this.password = hashSync(this.password, process.env.SALT_GEN || 10)
+  }
 }

@@ -1,8 +1,12 @@
-import { IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator'
 
 export class GetUserDTO {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  @Length(9)
-  cpf: string
+  id?: string
+
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  email?: string
 }
