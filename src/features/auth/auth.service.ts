@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { UsersService } from '../users/users.service'
-import { compare } from 'bcrypt'
 import { UserModel } from '../users/entity/users.entity'
 import { JwtService } from '@nestjs/jwt'
 import { JwtPayload } from 'src/strategies/jwt.strategy'
@@ -28,14 +27,15 @@ export class AuthService {
     return user
   }
 
-  login(user: UserModel) {
+  async login(user: UserModel) {
     const payload: JwtPayload = {
       sub: user.id,
-      email: user.email
+      email: user.email,
+      role: user.role
     }
 
-    return {
+    return Promise.resolve({
       jwt: this.jwtService.sign(payload)
-    }
+    })
   }
 }

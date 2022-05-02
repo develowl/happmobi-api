@@ -1,17 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
-import { UserModel } from 'src/features/users/entity/users.entity'
-import { UsersService } from 'src/features/users/users.service'
+import { PassportStrategy } from '@nestjs/passport'
+import { Injectable } from '@nestjs/common'
+import { Role } from 'src/enums/role.enum'
 
 export type JwtPayload = {
   sub: string
   email: string
+  role: Role
 }
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(@Inject(UsersService) private readonly usersService: UsersService) {
+  constructor() {
     super({
       secretOrKey: process.env.JWT_SECRET || 'SECRET',
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -19,7 +19,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })
   }
 
-  async validate(payload: JwtPayload): Promise<UserModel> {
-    return await this.usersService.get({ id: payload.sub })
+  async validate(payload: JwtPayload) {
+    return {
+      id: payload.sub,
+      email: payload.email,
+      role: payload.role
+    }
   }
 }
