@@ -11,7 +11,7 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Roles } from 'src/docorators/roles.decorator'
 import { Role } from 'src/enums/role.enum'
 import { JwtAuthGuard } from 'src/guards/jwt.auth.guard'
@@ -22,6 +22,7 @@ import { CreateRentalDTO } from './dto/create.rental.dto'
 import { RentalModel } from './entity/rentals.entity'
 import { RentalsService } from './rentals.service'
 
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('rentals')
 @ApiTags('Rentals')

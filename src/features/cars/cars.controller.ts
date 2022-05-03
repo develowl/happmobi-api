@@ -10,7 +10,7 @@ import {
   Put,
   UseGuards
 } from '@nestjs/common'
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Roles } from 'src/docorators/roles.decorator'
 import { Role } from 'src/enums/role.enum'
 import { JwtAuthGuard } from 'src/guards/jwt.auth.guard'
@@ -21,6 +21,7 @@ import { GetCarDTO } from './dto/get.car.dto'
 import { UpdateCarDTO } from './dto/update.car.dto'
 import { CarModel } from './entity/cars.entity'
 
+@ApiBearerAuth()
 @Controller('cars')
 @ApiTags('Cars')
 export class CarsController {

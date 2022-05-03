@@ -23,8 +23,8 @@ import { UpdateUserDTO } from './dto/update.user.dto'
 import { UserModel } from './entity/users.entity'
 import { UsersService } from './users.service'
 
-@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 @ApiTags('Users')
 export class UsersController {
