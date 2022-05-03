@@ -3,11 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -15,13 +10,16 @@ import {
 @Entity('Cars')
 export class CarModel extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  readonly id: string
+
+  @Column({ name: 'license_plate', unique: true })
+  readonly licensePlate: string
 
   @Column()
   name: string
 
   @Column()
-  description: string
+  brand: string
 
   @Column({ name: 'daily_rate' })
   dailyRate: number
@@ -31,12 +29,6 @@ export class CarModel extends BaseEntity {
 
   @Column({ default: true })
   available: boolean
-
-  @Column({ name: 'license_plate' })
-  licensePlate: string
-
-  @Column()
-  brand: string
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
