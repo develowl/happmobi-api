@@ -5,6 +5,7 @@ import ormconfig from 'ormconfig'
 import { AuthModule } from './features/auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { CarsModule } from './features/cars/cars.module'
+import { RentalsModule } from './features/rentals/rentals.module'
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { CarsModule } from './features/cars/cars.module'
     TypeOrmModule.forRoot(ormconfig),
     AuthModule,
     UsersModule,
-    CarsModule
+    CarsModule,
+    RentalsModule
   ],
   controllers: [],
   providers: []

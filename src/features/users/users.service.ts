@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException
 } from '@nestjs/common'
@@ -50,7 +51,6 @@ export class UsersService {
     return await this.repo.save(
       this.repo.create({
         ...user,
-
         email,
         password
       })
@@ -72,7 +72,8 @@ export class UsersService {
       throw new BadRequestException('Passwords do not match')
     }
     const user = await this.get({ id })
-    this.repo.merge(user, userDTO)
+    const hashPassword = await hash(password, Number(process.env.SALT_GEN) || 10)
+    this.repo.merge(user, { ...userDTO, password: hashPassword })
 
     const success = await this.repo.save(user)
 
@@ -82,11 +83,18 @@ export class UsersService {
   async delete(id: string): Promise<string> {
     const user = await this.repo.findOneBy({ id })
 
-    if (!user) throw new NotFoundException('User not found')
+    if (!user) {
+      throw new NotFoundException('User not found')
+    }
 
-    await this.repo.softDelete({ id })
+    try {
+      await this.repo.delete({ id })
+    } catch {
+      throw new ForbiddenException('Impossible delete a user with active rental')
+    }
+
     const deleted = await this.repo.findOneBy({ id })
-    return !deleted ? 'Impossible to delete user!!' : 'User removed successfully!!'
+    return !deleted ? 'User removed successfully!!' : 'Impossible to delete user!!'
   }
 
   async validate(email: string, password: string): Promise<boolean> {

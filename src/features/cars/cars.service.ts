@@ -68,6 +68,12 @@ export class CarsService {
       throw new NotFoundException('Car not found')
     }
 
+    try {
+      await this.repo.delete({ id })
+    } catch {
+      throw new ForbiddenException('Impossible delete a car with active rental')
+    }
+
     const deleted = await this.repo.findOneBy({ id })
     return !deleted ? 'Car removed successfully!!' : 'Impossible to delete car!!'
   }
