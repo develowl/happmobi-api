@@ -13,7 +13,6 @@ import { Repository } from 'typeorm'
 import { CarsService } from '../cars/cars.service'
 import { UsersService } from '../users/users.service'
 import { AdminCreateRentalDTO } from './dto/admin.create.rental.dto'
-import { CreateRentalDTO } from './dto/create.rental.dto'
 import { RentalModel } from './entity/rentals.entity'
 import * as dayjs from 'dayjs'
 

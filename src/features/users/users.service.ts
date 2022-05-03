@@ -6,7 +6,7 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { FindOptionsWhere, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 import { CreateUserDTO } from './dto/create.user.dto'
 import { GetUserDTO } from './dto/get.user.dto'
 import { UserModel } from './entity/users.entity'

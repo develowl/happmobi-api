@@ -11,13 +11,12 @@ import {
   UseGuards
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Roles } from 'src/docorators/roles.decorator'
+import { Roles } from 'src/decorators/roles.decorator'
 import { Role } from 'src/enums/role.enum'
 import { JwtAuthGuard } from 'src/guards/jwt.auth.guard'
 import { RolesGuard } from 'src/guards/roles.guard'
 import { CarsService } from './cars.service'
 import { CreateCarDTO } from './dto/create.car.dto'
-import { GetCarDTO } from './dto/get.car.dto'
 import { UpdateCarDTO } from './dto/update.car.dto'
 import { CarModel } from './entity/cars.entity'
 

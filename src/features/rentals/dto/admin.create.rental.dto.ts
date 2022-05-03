@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsDate, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsNotEmpty, IsUUID } from 'class-validator'
 import { CreateRentalDTO } from './create.rental.dto'
 
 export class AdminCreateRentalDTO extends CreateRentalDTO {
