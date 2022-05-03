@@ -69,7 +69,7 @@ export class CarsService {
     }
 
     try {
-      await this.repo.delete({ id })
+      await this.repo.softDelete({ id })
     } catch {
       throw new ForbiddenException('Impossible delete a car with active rental')
     }

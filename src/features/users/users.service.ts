@@ -88,7 +88,7 @@ export class UsersService {
     }
 
     try {
-      await this.repo.delete({ id })
+      await this.repo.softDelete({ id })
     } catch {
       throw new ForbiddenException('Impossible delete a user with active rental')
     }
