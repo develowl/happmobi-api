@@ -4,8 +4,14 @@ First, clone this repository:
 
 ```bash
 git clone https://github.com/develowl/happmobi-api.git
-# or
-yarn dev
+```
+
+## Run docker image
+
+On your terminal, run the command below:
+
+```bash
+  docker-compose up -d
 ```
 
 ## Install Dependencies
