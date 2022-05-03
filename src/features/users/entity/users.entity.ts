@@ -1,6 +1,14 @@
 import { hashSync } from 'bcrypt'
 import { Role } from 'src/enums/role.enum'
-import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  BaseEntity,
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 
 @Entity('Users')
 export class UserModel extends BaseEntity {
@@ -21,6 +29,12 @@ export class UserModel extends BaseEntity {
 
   @Column({ default: Role.User })
   role: Role
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date
 
   @BeforeInsert()
   hashPassword() {
