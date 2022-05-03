@@ -8,10 +8,14 @@ git clone https://github.com/develowl/happmobi-api.git
 
 ## Run docker image
 
-On your terminal, run the command below:
+On your terminal, run the commands below:
 
 ```bash
-  docker-compose up -d
+  1. docker-compose up -d
+```
+
+```bash
+  2. cat dump_db.sql | docker exec -i db psql -U postgres
 ```
 
 ## Install Dependencies
