@@ -11,6 +11,7 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Roles } from 'src/docorators/roles.decorator'
 import { Role } from 'src/enums/role.enum'
 import { JwtAuthGuard } from 'src/guards/jwt.auth.guard'
@@ -23,34 +24,46 @@ import { RentalsService } from './rentals.service'
 
 @UseGuards(JwtAuthGuard)
 @Controller('rentals')
+@ApiTags('Rentals')
 export class RentalsController {
   constructor(@Inject(RentalsService) private readonly service: RentalsService) {}
 
   @Get('me/active')
-  async myRental(@Request() { user }: { user: UserModel }): Promise<RentalModel> {
-    return await this.service.myActiveRental(user.id)
+  @ApiOperation({ summary: "Get user's active rent" })
+  async myRent(@Request() { user }: { user: UserModel }): Promise<RentalModel> {
+    return await this.service.myActiveRent(user.id)
   }
 
   @Get('me/history')
-  async myRentals(@Request() { user }: { user: UserModel }): Promise<RentalModel[]> {
-    return await this.service.myRentals(user.id)
+  @ApiOperation({ summary: "Get user's rents history" })
+  async myRents(@Request() { user }: { user: UserModel }): Promise<RentalModel[]> {
+    return await this.service.myRents(user.id)
   }
 
   @UseGuards(RolesGuard)
   @Get('active')
   @Roles(Role.Admin)
+  @ApiOperation({ summary: 'Get all active rents - ADMIN OPERATION' })
   async getAllActive(): Promise<RentalModel[]> {
     return await this.service.getAllActive()
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get rent by id' })
+  async get(@Param('id', new ParseUUIDPipe()) id: string): Promise<RentalModel> {
+    return await this.service.get(id)
   }
 
   @UseGuards(RolesGuard)
   @Get()
   @Roles(Role.Admin)
+  @ApiOperation({ summary: 'Get all rents - ADMIN OPERATION' })
   async getAll(): Promise<RentalModel[]> {
     return await this.service.getAll()
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new rent for connected user' })
   async create(
     @Request() { user }: { user: UserModel },
     @Body() rental: CreateRentalDTO
@@ -64,11 +77,13 @@ export class RentalsController {
   @UseGuards(RolesGuard)
   @Post('admin')
   @Roles(Role.Admin)
+  @ApiOperation({ summary: 'Create a new rent - ADMIN OPERATION' })
   async adminCreate(@Body() rentalDTO: AdminCreateRentalDTO): Promise<RentalModel> {
     return await this.service.rent(rentalDTO)
   }
 
   @Put(':id')
+  @ApiOperation({ summary: "Return a car related to the user's active rent" })
   async giveBack(@Param('id', new ParseUUIDPipe()) id: string): Promise<RentalModel> {
     return await this.service.giveBack(id)
   }

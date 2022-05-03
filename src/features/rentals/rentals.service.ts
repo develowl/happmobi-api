@@ -25,7 +25,15 @@ export class RentalsService {
     @Inject(CarsService) private readonly carsService: CarsService
   ) {}
 
-  async myActiveRental(idUser: string): Promise<RentalModel> {
+  async get(id: string): Promise<RentalModel> {
+    try {
+      return await this.repo.findOneBy({ id })
+    } catch {
+      throw new NotFoundException('Rent not found')
+    }
+  }
+
+  async myActiveRent(idUser: string): Promise<RentalModel> {
     const userFound = await this.usersService.get({ id: idUser })
 
     if (userFound.role === Role.Admin) {
@@ -39,11 +47,11 @@ export class RentalsService {
         }
       })
     } catch {
-      throw new NotFoundException('You have no active rentals currently.')
+      throw new NotFoundException('You have no active rents currently.')
     }
   }
 
-  async myRentals(idUser: string): Promise<RentalModel[]> {
+  async myRents(idUser: string): Promise<RentalModel[]> {
     const userFound = await this.usersService.get({ id: idUser })
 
     if (userFound.role === Role.Admin) {
@@ -66,7 +74,7 @@ export class RentalsService {
         withDeleted: true
       })
     } catch {
-      throw new NotFoundException('You have no active rentals currently.')
+      throw new NotFoundException('You have no active rents currently.')
     }
   }
 
@@ -94,7 +102,7 @@ export class RentalsService {
     ])
 
     if (!!rentalFound || !!rentalFound?.deletedAt) {
-      throw new ConflictException('User or car already have an active rental')
+      throw new ConflictException('User or car already have an active rent')
     }
 
     await this.carsService.setAvailable(carFound, false)
