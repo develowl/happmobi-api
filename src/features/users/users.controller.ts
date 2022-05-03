@@ -23,16 +23,16 @@ import { UpdateUserDTO } from './dto/update.user.dto'
 import { UserModel } from './entity/users.entity'
 import { UsersService } from './users.service'
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 @Controller('users')
 @ApiTags('Users')
 export class UsersController {
   constructor(@Inject(UsersService) private readonly service: UsersService) {}
 
-  // @UseGuards(RolesGuard)
+  @UseGuards(RolesGuard)
   @Post()
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Create a new user - ADMIN OPERATION' })
   @ApiBody({
     type: AdminCreateUserDTO,
