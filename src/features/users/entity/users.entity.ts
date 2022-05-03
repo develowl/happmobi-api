@@ -42,6 +42,6 @@ export class UserModel extends BaseEntity {
 
   @BeforeInsert()
   hashPassword() {
-    this.password = hashSync(this.password, process.env.SALT_GEN || 10)
+    this.password = hashSync(this.password, Number(process.env.SALT_GEN) || 10)
   }
 }
