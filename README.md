@@ -13,11 +13,6 @@ Open [http://localhost:3333/api/v1](http://localhost:3333/api/v1) with your brow
 ## Commands
 
 - `start:dev`: runs your application on `localhost:3333/api/v1`
-- `build`: creates the production build version
-- `test`: runs jest to test all components
-- `generate`: generates a new component
-- `storybook`: runs storybook on `localhost:6006`
-- `build-storybook`: create the build version of storybook
 
 ## Usage
 
