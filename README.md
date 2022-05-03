@@ -1,14 +1,22 @@
 ## Getting Started
 
-First, run the development server:
+First, clone this repository:
 
 ```bash
-npm run dev
+git clone https://github.com/develowl/happmobi-api.git
 # or
 yarn dev
 ```
 
-Open [http://localhost:3333/api/v1](http://localhost:3333/api/v1) with your browser to see the result.
+## Install Dependencies
+
+Now, install the dependencies:
+
+```bash
+npm install
+# or
+yarn
+```
 
 ## Commands
 
