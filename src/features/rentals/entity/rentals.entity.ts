@@ -19,7 +19,7 @@ export class RentalModel extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string
 
-  @ManyToOne(() => UserModel, { eager: true })
+  @ManyToOne(() => UserModel, { eager: true, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'id_user' })
   idUser: UserModel
 
@@ -48,6 +48,6 @@ export class RentalModel extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ name: 'deleted_at', select: false })
   deletedAt?: Date
 }

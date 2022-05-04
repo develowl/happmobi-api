@@ -34,6 +34,7 @@ export class RentalsService {
 
   async myActiveRent(idUser: string): Promise<RentalModel> {
     const userFound = await this.usersService.get({ id: idUser })
+    console.log('userfound', userFound)
 
     if (userFound.role === Role.Admin) {
       throw new ForbiddenException('Admin user is not allowed to rent a car')
@@ -46,7 +47,7 @@ export class RentalsService {
         }
       })
     } catch {
-      throw new NotFoundException('You have no active rents currently.')
+      throw new NotFoundException('You have no active rents currently')
     }
   }
 
@@ -73,7 +74,7 @@ export class RentalsService {
         withDeleted: true
       })
     } catch {
-      throw new NotFoundException('You have no active rents currently.')
+      throw new NotFoundException('You have no active rents currently')
     }
   }
 
@@ -140,6 +141,7 @@ export class RentalsService {
       total
     })
     await this.repo.save(rentalFound)
+    await this.carsService.setAvailable(rentalFound.idCar, true)
     await this.repo.softDelete({ id: rentalFound.id })
 
     return rentalFound

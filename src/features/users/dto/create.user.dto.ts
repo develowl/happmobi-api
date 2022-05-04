@@ -5,26 +5,26 @@ export class CreateUserDTO {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  @ApiProperty()
+  @ApiProperty({ example: 'user@teste.com' })
   email: string
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
-  password: string
-
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'User' })
   name: string
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'Test' })
   lastname: string
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: '123' })
+  password: string
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ example: '123' })
   rePassword: string
 }

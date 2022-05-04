@@ -22,7 +22,7 @@ export class UsersService {
   async get({ id, email }: GetUserDTO, role?: Role): Promise<UserModel> {
     const param = !id ? { email } : { id }
     try {
-      return await this.repo.findOneBy({
+      return await this.repo.findOneByOrFail({
         ...param,
         role: !!role && role === Role.User ? role : undefined
       })
@@ -43,18 +43,29 @@ export class UsersService {
       throw new BadRequestException('Passwords do not match')
     }
 
-    const userFound = await this.repo.findOneBy([{ email }])
+    const userFound = await this.repo.findOne({
+      where: { email },
+      select: { id: true, deletedAt: true },
+      withDeleted: true
+    })
+
     if (userFound) {
+      if (userFound?.deletedAt) {
+        await this.repo.update({ email }, { password, deletedAt: null })
+        return await this.get({ email })
+      }
       throw new ConflictException('User already exists')
     }
 
-    return await this.repo.save(
+    await this.repo.save(
       this.repo.create({
         ...user,
         email,
         password
       })
     )
+
+    return await this.get({ email })
   }
 
   async updateInfo(id: string, userDTO: UpdateUserDTO): Promise<UserModel> {
@@ -81,20 +92,19 @@ export class UsersService {
   }
 
   async delete(id: string): Promise<string> {
-    const user = await this.repo.findOneBy({ id })
+    const user = await this.repo.findOne({ where: { id }, relations: ['rental'] })
 
     if (!user) {
       throw new NotFoundException('User not found')
     }
 
-    try {
-      await this.repo.softDelete({ id })
-    } catch {
-      throw new ForbiddenException('Impossible delete a user with active rental')
+    if (user?.rental.length > 0) {
+      console.log('USER', user.rental.length)
+      throw new ForbiddenException('Unable to delete! You currently have an active rent')
     }
 
-    const deleted = await this.repo.findOneBy({ id })
-    return !deleted ? 'User removed successfully!!' : 'Impossible to delete user!!'
+    await this.repo.softDelete({ id })
+    return 'User removed successfully!!'
   }
 
   async validate(email: string, password: string): Promise<boolean> {

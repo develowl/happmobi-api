@@ -200,7 +200,7 @@ CREATE TABLE public."Cars" (
     available boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL,
-    "deletedAt" timestamp without time zone
+    deleted_at timestamp without time zone
 );
 
 
@@ -219,7 +219,7 @@ CREATE TABLE public."Rentals" (
     status character varying DEFAULT 'active'::character varying NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL,
-    "deletedAt" timestamp without time zone,
+    deleted_at timestamp without time zone,
     id_user uuid,
     id_car uuid
 );
@@ -240,7 +240,7 @@ CREATE TABLE public."Users" (
     role character varying DEFAULT 'user'::character varying NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL,
-    "deletedAt" timestamp without time zone
+    deleted_at timestamp without time zone
 );
 
 
@@ -266,7 +266,7 @@ ALTER TABLE public.typeorm_metadata OWNER TO postgres;
 -- Data for Name: Cars; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Cars" (id, license_plate, name, brand, daily_rate, fine_amount, available, created_at, updated_at, "deletedAt") FROM stdin;
+COPY public."Cars" (id, license_plate, name, brand, daily_rate, fine_amount, available, created_at, updated_at, deleted_at) FROM stdin;
 0dcbb198-adc2-431f-897b-54f15cf9f2d8	XYZ4321	Corcel	Ford	45	55	t	2022-05-03 17:24:32.090252	2022-05-03 17:24:32.090252	\N
 fd0a8564-26a9-4213-bb6e-4376dd10aec4	KLM7654	Gol	Volkswagen	25	33	t	2022-05-03 17:24:55.474101	2022-05-03 17:24:55.474101	\N
 b5ef2f05-494d-448c-95d8-84f80efa5dfc	ABC1234	Opala	Chevrolet	30	40	f	2022-05-03 17:24:11.361017	2022-05-03 17:25:35.708851	\N
@@ -277,7 +277,7 @@ b5ef2f05-494d-448c-95d8-84f80efa5dfc	ABC1234	Opala	Chevrolet	30	40	f	2022-05-03 
 -- Data for Name: Rentals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Rentals" (id, start_date, end_date, expeect_end_date, total, status, created_at, updated_at, "deletedAt", id_user, id_car) FROM stdin;
+COPY public."Rentals" (id, start_date, end_date, expeect_end_date, total, status, created_at, updated_at, deleted_at, id_user, id_car) FROM stdin;
 2a5bb5f1-133a-4927-afae-9184aa3cf413	2022-05-03 17:20:53.773	\N	2022-05-20 12:00:00	0	active	2022-05-03 17:25:35.723503	2022-05-03 17:25:35.723503	\N	3f735b25-8d56-4d65-b380-d2bb6b40c2c7	b5ef2f05-494d-448c-95d8-84f80efa5dfc
 \.
 
@@ -286,7 +286,7 @@ COPY public."Rentals" (id, start_date, end_date, expeect_end_date, total, status
 -- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Users" (id, email, password, name, lastname, role, created_at, updated_at, "deletedAt") FROM stdin;
+COPY public."Users" (id, email, password, name, lastname, role, created_at, updated_at, deleted_at) FROM stdin;
 3f735b25-8d56-4d65-b380-d2bb6b40c2c7	teste@teste.com	$2b$10$zdmsikttIxLLh364w9N9CuZ/2ykqNUdDD52bMhOEc7iQ1VEo6Bd/m	teste	teste	user	2022-05-03 17:17:09.543211	2022-05-03 17:17:09.543211	\N
 08868ee2-1efb-4259-a579-2aa985e90ef8	admin@admin.com	$2b$10$U/JPFnhLm.nS.w2a/Ge8lOBZBLbO6Dq7Vfh4hVJ91AkdqTtQ4V6uu	Admin	Api	admin	2022-05-03 17:15:24.331305	2022-05-03 17:15:24.331305	\N
 \.

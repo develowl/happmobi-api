@@ -1,6 +1,14 @@
 import { Body, Controller, Inject, Post, Request, UseGuards } from '@nestjs/common'
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import { LocalAuthGuard } from 'src/guards/local.auth.guard'
+import { UserSchema } from 'src/helpers/swagger/schema'
 import { LocalStrategyDTO } from 'src/strategies/dto/local.strategy.dto'
 import { CreateUserDTO } from '../users/dto/create.user.dto'
 import { UserModel } from '../users/entity/users.entity'
@@ -30,34 +38,33 @@ export class AuthController {
       },
       user: {
         description: 'Regular user account',
-        value: {
-          email: 'user@teste.com',
-          password: '123'
+        value: LocalStrategyDTO
+      }
+    }
+  })
+  @ApiCreatedResponse({
+    description: 'User logged in',
+    schema: {
+      properties: {
+        jwt: {
+          type: 'string',
+          example:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzZjczNWIyNS04ZDU2LTRkNjUtYjM4MC1kMmJiNmI0MGMyYzciLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjUxNjYxNzY3LCJleHAiOjE2NTE3NDgxNjd9.4Rxc3xZeAhBIYLY7tS8QPoBdUSdv5km2hTnmVGRIAAE'
         }
       }
     }
   })
+  @ApiBadRequestResponse({ description: 'Incorrect email or password' })
   async login(@Request() req): Promise<{ jwt: string }> {
     return await this.authService.login(req.user)
   }
 
   @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
-  @ApiBody({
-    type: LocalStrategyDTO,
-    examples: {
-      user: {
-        description: 'Regular user account',
-        value: {
-          email: 'user@teste.com',
-          password: '123',
-          rePassword: '123',
-          name: 'User',
-          lastname: 'Test'
-        }
-      }
-    }
-  })
+  @ApiOperation({ summary: 'Create a new account' })
+  @ApiBody({ type: CreateUserDTO })
+  @ApiCreatedResponse({ description: 'User created', schema: UserSchema })
+  @ApiBadRequestResponse({ description: 'Invalid or missing parameters' })
+  @ApiConflictResponse({ description: 'User already exists' })
   async register(@Body() userDTO: CreateUserDTO): Promise<UserModel> {
     return await this.usersService.create(userDTO)
   }

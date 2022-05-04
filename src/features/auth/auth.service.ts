@@ -12,11 +12,10 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<UserModel> {
-    let user: UserModel
-    try {
-      user = await this.userService.get({ email })
-    } catch (error) {
-      return null
+    const user = await this.userService.get({ email })
+
+    if (!user) {
+      throw new NotFoundException('User not found')
     }
 
     const valid = await this.userService.validate(email, password)

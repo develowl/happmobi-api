@@ -14,6 +14,6 @@ export class CreateRentalDTO {
 
   @IsNotEmpty()
   @IsDateString()
-  @ApiPropertyOptional()
+  @ApiProperty()
   expectEndDate: Date
 }

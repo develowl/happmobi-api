@@ -4,11 +4,11 @@ import { IsNotEmpty, IsString } from 'class-validator'
 export class LocalStrategyDTO {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'teste@teste.com' })
   email: string
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'teste' })
   password: string
 }

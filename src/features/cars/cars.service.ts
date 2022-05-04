@@ -55,26 +55,24 @@ export class CarsService {
   async update(id: string, carDTO: UpdateCarDTO): Promise<CarModel> {
     const car = await this.get({ id })
     if (!car.available) {
-      throw new ForbiddenException('Impossible update an unavailable car')
+      throw new ForbiddenException('Unable to update an unavailable car')
     }
     this.repo.merge(car, carDTO)
     return await this.repo.save(car)
   }
 
   async delete(id: string): Promise<string> {
-    const car = await this.repo.findOneBy({ id })
+    const car = await this.repo.findOne({ where: { id }, relations: ['rental'] })
 
     if (!car) {
       throw new NotFoundException('Car not found')
     }
 
-    try {
-      await this.repo.softDelete({ id })
-    } catch {
-      throw new ForbiddenException('Impossible delete a car with active rental')
+    if (!!car?.rental) {
+      throw new ForbiddenException('Unable to delete a car with active rent')
     }
 
-    const deleted = await this.repo.findOneBy({ id })
-    return !deleted ? 'Car removed successfully!!' : 'Impossible to delete car!!'
+    await this.repo.softDelete({ id })
+    return 'Car removed successfully!!'
   }
 }

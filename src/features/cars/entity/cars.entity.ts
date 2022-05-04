@@ -1,9 +1,11 @@
+import { RentalModel } from 'src/features/rentals/entity/rentals.entity'
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -37,6 +39,9 @@ export class CarModel extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ name: 'deleted_at', select: false })
   deletedAt?: Date
+
+  @OneToMany(() => RentalModel, (rental) => rental.idCar, { nullable: true })
+  rental?: RentalModel
 }

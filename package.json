@@ -18,8 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:create": "ts-node ./node_modules/typeorm/cli.js migration:create",
-    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
+    "db:up": "docker-compose up -d",
+    "db:restore": "cat ./dump_db.sql | docker exec -i db psql -U postgres",
+    "db:down": "docker-compose down",
+    "db:backup": "docker exec -t db pg_dumpall -c -U postgres > dump_db.sql",
+    "db:clean": "docker-compose down -v"
   },
   "dependencies": {
     "@nestjs/common": "^8.1.1",
