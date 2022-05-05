@@ -4,11 +4,11 @@ import { IsNumber, IsOptional } from 'class-validator'
 export class UpdateCarDTO {
   @IsOptional()
   @IsNumber()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 25 })
   dailyRate?: number
 
   @IsOptional()
   @IsNumber()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 33 })
   fineAmount?: number
 }

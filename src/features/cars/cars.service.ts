@@ -17,7 +17,7 @@ export class CarsService {
 
   async get({ id, licensePlate }: GetCarDTO): Promise<CarModel> {
     try {
-      return await this.repo.findOneBy([{ id }, { licensePlate }])
+      return await this.repo.findOneByOrFail([{ id }, { licensePlate }])
     } catch {
       throw new NotFoundException('Car not found')
     }

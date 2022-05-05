@@ -26,7 +26,7 @@ export class RentalsService {
 
   async get(id: string): Promise<RentalModel> {
     try {
-      return await this.repo.findOneBy({ id })
+      return await this.repo.findOneByOrFail({ id })
     } catch {
       throw new NotFoundException('Rent not found')
     }
@@ -34,20 +34,19 @@ export class RentalsService {
 
   async myActiveRent(idUser: string): Promise<RentalModel> {
     const userFound = await this.usersService.get({ id: idUser })
-    console.log('userfound', userFound)
 
     if (userFound.role === Role.Admin) {
       throw new ForbiddenException('Admin user is not allowed to rent a car')
     }
 
     try {
-      return await this.repo.findOneBy({
+      return await this.repo.findOneByOrFail({
         idUser: {
           id: idUser
         }
       })
     } catch {
-      throw new NotFoundException('You have no active rents currently')
+      throw new NotFoundException('You have no active rent currently')
     }
   }
 
@@ -74,7 +73,7 @@ export class RentalsService {
         withDeleted: true
       })
     } catch {
-      throw new NotFoundException('You have no active rents currently')
+      throw new NotFoundException('You have no active rent currently')
     }
   }
 
@@ -116,34 +115,34 @@ export class RentalsService {
     )
   }
 
-  async giveBack(id: string): Promise<RentalModel> {
-    const rentalFound = await this.repo.findOneBy({ id })
+  async giveBack(idUser: string): Promise<RentalModel> {
+    try {
+      const userFound = await this.usersService.get({ id: idUser })
+      if (userFound.role === Role.Admin) {
+        throw new ForbiddenException('Admin user is not allowed to give a car back')
+      }
 
-    if (!rentalFound) {
-      throw new NotFoundException('Rental not found')
+      const rentalFound = await this.repo.findOneByOrFail({ idUser: { id: idUser } })
+      const car = rentalFound.idCar
+      const startDate = rentalFound.startDate
+      const expectEndDate = rentalFound.expectEndDate
+      const endDate = new Date()
+      const diffDays = dayjs(endDate).diff(expectEndDate, 'day')
+      const rateDays = dayjs(startDate).diff(endDate, 'day')
+      const rate = car.dailyRate * (rateDays > 0 ? rateDays : 1)
+      const total = diffDays > 0 ? rate + car.fineAmount : rate
+      this.repo.merge(rentalFound, {
+        status: RentalStatus.COMPLETED,
+        endDate: new Date(),
+        total
+      })
+      await this.repo.save(rentalFound)
+      await this.carsService.setAvailable(rentalFound.idCar, true)
+      await this.repo.softDelete({ id: rentalFound.id })
+
+      return rentalFound
+    } catch {
+      throw new NotFoundException('User have no active rent')
     }
-
-    if (rentalFound.status === RentalStatus.COMPLETED) {
-      throw new BadRequestException('Rent is already completed')
-    }
-
-    const car = rentalFound.idCar
-    const startDate = rentalFound.startDate
-    const expectEndDate = rentalFound.expectEndDate
-    const endDate = new Date()
-    const diffDays = dayjs(endDate).diff(expectEndDate, 'day')
-    const rateDays = dayjs(startDate).diff(endDate, 'day')
-    const rate = car.dailyRate * (rateDays > 0 ? rateDays : 1)
-    const total = diffDays > 0 ? rate + car.fineAmount : rate
-    this.repo.merge(rentalFound, {
-      status: RentalStatus.COMPLETED,
-      endDate: new Date(),
-      total
-    })
-    await this.repo.save(rentalFound)
-    await this.carsService.setAvailable(rentalFound.idCar, true)
-    await this.repo.softDelete({ id: rentalFound.id })
-
-    return rentalFound
   }
 }

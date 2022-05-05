@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  NotAcceptableException,
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -80,7 +81,7 @@ export class UsersService {
 
     const passwordsMatch = password === rePassword
     if (!passwordsMatch) {
-      throw new BadRequestException('Passwords do not match')
+      throw new NotAcceptableException('Passwords do not match')
     }
     const user = await this.get({ id })
     const hashPassword = await hash(password, Number(process.env.SALT_GEN) || 10)
@@ -99,8 +100,7 @@ export class UsersService {
     }
 
     if (user?.rental.length > 0) {
-      console.log('USER', user.rental.length)
-      throw new ForbiddenException('Unable to delete! You currently have an active rent')
+      throw new ForbiddenException('Unable to delete! User currently have an active rent')
     }
 
     await this.repo.softDelete({ id })
